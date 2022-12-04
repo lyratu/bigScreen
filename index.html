@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bigScreen</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            padding: 37px 0;
+            box-sizing: border-box;
+            background-color: #1D2B56;
+        }
+
+        .title {
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .title::after {
+            top: 50%;
+            left: 50%;
+            font-size: 40px;
+            color: #19ECFF;
+            font-weight: bold;
+            position: absolute;
+            content: attr(data-title);
+            transform: translate(-50%, -50%);
+        }
+
+        .container {
+            padding: 0 34px;
+        }
+
+        /* 所有面板列表 */
+
+        .panel-List,
+        .linePanel-list,
+        .footerPanel-list {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* 面板列表1 */
+
+        .panel-List .panel {
+            width: 32%;
+            height: 380px;
+            position: relative;
+            background: url('./images/panel.png') no-repeat;
+            background-size: 100% 100%;
+
+        }
+
+        .panel-List .panel::after {
+            left: 50%;
+            top: 12px;
+            font-size: 26px;
+            color: #19ECFF;
+            position: absolute;
+            content: attr(data-name);
+            transform: translate(-50%, 0);
+        }
+
+        .panel-List .panel .body {
+            top: 65px;
+            width: 100%;
+            height: 300px;
+            position: absolute;
+            /* border: 1px solid red; */
+        }
+
+        /* 隐藏滚动条 */
+        #scroll::-webkit-scrollbar {
+            display: none;
+            /* Chrome Safari */
+        }
+
+        #scroll {
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+
+            /* 隐藏滚动条 */
+            scrollbar-width: none;
+            /* firefox */
+            -ms-overflow-style: none;
+            /* IE 10+ */
+        }
+
+        .panel-List .panel .table {
+            width: 90%;
+            color: #fff;
+            font-size: 14px;
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .panel-List .panel .table th {
+            font-weight: 400;
+            color: #19ECFF;
+        }
+
+        .panel-List .panel .table td {
+            padding-top: 20px;
+        }
+
+        .panel-List .panel .table a {
+            color: #00B1FF;
+        }
+
+        /* 面板列表2 */
+
+        .linePanel-list {
+            margin: 25px 0;
+        }
+
+        .linePanel-list .panel {
+            width: 19%;
+            height: 76px;
+            display: flex;
+            font-size: 40px;
+            font-weight: bold;
+            color: #0EFBFE;
+            position: relative;
+            align-items: center;
+            justify-content: center;
+            background: url('./images/linePanel.png') no-repeat;
+            background-size: 100% 100%;
+        }
+
+        .linePanel-list .panel::after {
+            top: 12px;
+            left: 14px;
+            font-size: 14px;
+            color: #0EFBFE;
+            position: absolute;
+            content: attr(data-name);
+        }
+
+        /* 面板列表3 */
+
+        .footerPanel-list .panel {
+            width: 32%;
+            height: 349px;
+            position: relative;
+            background: url('./images/footerPanel.png') no-repeat;
+            background-size: 100% 100%;
+        }
+
+        .footerPanel-list .panel::after {
+            top: 22px;
+            left: 25px;
+            font-size: 26px;
+            color: #19ECFF;
+            position: absolute;
+            content: attr(data-name);
+        }
+
+        .footerPanel-list .panel .body {
+            top: 25px;
+            width: 100%;
+            height: 300px;
+            position: absolute;
+            /* border: 1px solid red; */
+        }
+
+        /* 隐藏滚动条 */
+        #intervalScroll::-webkit-scrollbar {
+            display: none;
+            /* Chrome Safari */
+        }
+
+        #intervalScroll:first-child {
+            overflow-y: auto;
+            display: flex;
+            top: 60px !important;
+            height: 260px !important;
+            justify-content: center;
+
+            /* 隐藏滚动条 */
+            scrollbar-width: none;
+            /* firefox */
+            -ms-overflow-style: none;
+            /* IE 10+ */
+        }
+
+        .footerPanel-list .panel .table {
+            width: 90%;
+            color: #fff;
+            margin: 0 auto;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .footerPanel-list .panel .table th {
+            font-weight: 400;
+            color: #19ECFF;
+        }
+
+        .footerPanel-list .panel .table td {
+            padding-bottom: 20px;
+        }
+
+        .footerPanel-list .panel .table a {
+            color: #00B1FF;
+        }
+
+        /* charts */
+        #chart1,
+        #chart2,
+        #chart3,
+        #chart4 {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="title" data-title="服务大数据可视化监管平台">
+        <img src="./images/header.png" width="100%">
+    </div>
+    <div class="container">
+
+        <!-- 面板列表1 name为面板标题  -->
+        <div class="panel-List">
+            <div class="panel" data-name="人员数量">
+                <div class="body">
+                    <div id="chart1"></div>
+                </div>
+            </div>
+            <div class="panel" data-name="待办事务分布饼状图">
+                <div class="body">
+                    <div id="chart2"></div>
+                </div>
+            </div>
+            <div class="panel" data-name="待办事务分布饼状图">
+                <div class="body" id="scroll">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>事项类型</th>
+                                <th>申请时间</th>
+                                <th>申请部门</th>
+                                <th>申请人</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                                <td><a href="">查看详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                                <td><a href="">查看详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                                <td><a href="">查看详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                                <td><a href="">查看详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                                <td><a href="">查看详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                                <td><a href="">查看详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                                <td><a href="">查看详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                                <td><a href="">查看详情</a></td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                                <td><a href="">查看详情</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 面板列表2 name为面板标题 span内为数字内容 -->
+        <div class="linePanel-list">
+            <div class="panel" data-name="测试1">
+                <span>98</span>
+            </div>
+            <div class="panel" data-name="测试2">
+                <span>324</span>
+            </div>
+            <div class="panel" data-name="测试3">
+                <span>352</span>
+            </div>
+            <div class="panel" data-name="测试4">
+                <span>214</span>
+            </div>
+            <div class="panel" data-name="测试5">
+                <span>245</span>
+            </div>
+        </div>
+
+        <!-- 面板列表3 name为面板标题  -->
+        <div class="footerPanel-list">
+            <div class="panel" data-name="已完成事项">
+                <div class="body" id="intervalScroll">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                            </tr>
+                            <tr>
+                                <td>重大资源</td>
+                                <td>2022/02/04</td>
+                                <td>文化部</td>
+                                <td>李大锤</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="panel" data-name="已完成事项">
+                <div class="body">
+                    <div id="chart3"></div>
+                </div>
+            </div>
+            <div class="panel" data-name="已完成事项">
+                <div class="body">
+                    <div id="chart4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./js/echarts.min.js"></script>
+    <script>
+        /* 无线滚动 */
+        let moveTop = 0
+        /* 滚动状态 0停止 1滚动 */
+        let status = 1
+        /* 定时器 */
+        let interval = null
+
+        const intervalScroll = document.getElementById("intervalScroll")
+
+        function start() {
+            interval = setInterval(() => {
+                moveTop += 80
+                const { clientHeight, scrollHeight } = intervalScroll
+                console.log('moveTop',moveTop);
+                intervalScroll.scrollTo({ top: moveTop, behavior: 'smooth' })
+                if (moveTop >= scrollHeight - clientHeight) moveTop = 0
+
+            }, 1000);
+        }
+
+        start()
+
+        intervalScroll.onmouseover = function () {
+            if (status) {
+                clearInterval(interval)
+                status = 0
+            }
+        }
+        intervalScroll.onmouseout = function () {
+            if (!status) {
+                start()
+                status = 1
+            }
+        }
+
+
+
+        /* 图表渲染 */
+        let chart1 = echarts.init(document.getElementById('chart1'));
+        let chart2 = echarts.init(document.getElementById('chart2'));
+        let chart3 = echarts.init(document.getElementById('chart3'));
+        let chart4 = echarts.init(document.getElementById('chart4'));
+
+        /* 图表1 */
+        let chart1_option = {
+            legend: {
+                icon: "roundRect",
+                top: 'bottom',
+                textStyle: {
+                    color: "#09CCDE"
+                }
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            series: [
+                {
+                    name: '人员数量',
+                    type: 'pie',
+                    label: {
+                        color: "#09CCDE",
+                        formatter: '{b}（{d}%）'
+                    },
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    },
+                    radius: [30, 60],
+                    center: ['50%', '50%'],
+                    roseType: 'area',
+                    itemStyle: {
+                        borderRadius: 8
+                    },
+                    data: [
+                        { value: 40, name: '重大资源' },
+                        { value: 38, name: '较大资源' },
+                        { value: 32, name: '一般资源' },
+                        { value: 30, name: '特大资源' },
+                    ]
+                }
+            ]
+        };
+        chart1.setOption(chart1_option);
+
+        /* 图表2 */
+        let chart2_option = {
+            legend: {
+                icon: "roundRect",
+                right: '6%',
+                top: "center",
+                orient: 'vertical',
+                textStyle: {
+                    color: "#09CCDE"
+                }
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            series: [
+                {
+                    name: '待办事项',
+                    type: 'pie',
+                    label: {
+                        color: "#09CCDE",
+                        formatter: '{b}（{d}%）'
+                    },
+                    radius: '50%',
+                    center: ['45%', '50%'],
+                    data: [
+                        { value: 40, name: '重大资源' },
+                        { value: 38, name: '较大资源' },
+                        { value: 32, name: '一般资源' },
+                        { value: 30, name: '特大资源' },
+                    ],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+        chart2.setOption(chart2_option);
+
+        /* 图表3 */
+        let chart3_option = {
+            legend: {
+                icon: "roundRect",
+                right: '6%',
+                top: "center",
+                orient: 'vertical',
+                textStyle: {
+                    color: "#09CCDE"
+                }
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            series: [
+                {
+                    name: '待办事项',
+                    type: 'pie',
+                    label: {
+                        color: "#09CCDE",
+                        formatter: '{b}（{d}%）'
+                    },
+                    radius: '60%',
+                    center: ['45%', '50%'],
+                    data: [
+                        { value: 40, name: '重大资源' },
+                        { value: 38, name: '较大资源' },
+                        { value: 32, name: '一般资源' },
+                        { value: 30, name: '特大资源' },
+                    ],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+        chart3.setOption(chart3_option);
+
+        /* 图表4 */
+        let chart4_option = {
+            tooltip: {
+                trigger: 'item'
+            },
+            xAxis: {
+                type: 'category',
+                axisLabel: {
+                    color: "#ffffff"
+                },
+                axisTick: {
+                    alignWithLabel: true
+                },
+                data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+            },
+            yAxis: {
+                type: 'value',
+                axisLabel: {
+                    color: "#ffffff"
+                }
+            },
+            series: [
+                {
+                    barWidth: "40%",
+                    data: [20, 25, 30, 38, 24, 20, 20],
+                    type: 'bar',
+                }
+            ]
+        };
+        chart4.setOption(chart4_option);
+
+        /* 表格滚动监听 */
+        const scrollDOM = document.getElementById("scroll")
+        scrollDOM.onscroll = function (e) {
+            const windowH = e.target.clientHeight // 元素高度
+            const documentH = e.target.scrollHeight // 可滑动高度
+            const scrollH = e.target.scrollTop // 滑动高度，滑块到顶部的距离
+            /* 触底判断 */
+            if (windowH + scrollH >= documentH) {
+                console.log('请求数据！')
+            }
+        }
+    </script>
+</body>
+
+</html>
